@@ -1,17 +1,17 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import API from "./utils/API/";
-import PriceChart from "./components/PriceChart/";
+import IndividualStockPricePage from "./pages/IndividualStockInfoPage/";
 
 
 
 API.search();
 
 function App() {
-  
-  return(
-    <PriceChart/>
+
+  return (
+    <IndividualStockPricePage />
   )
 }
 
