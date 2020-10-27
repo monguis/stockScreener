@@ -1,17 +1,13 @@
-import React, { useEffect } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import API from "./utils/API/";
 import IndividualStockInfoPage from "./pages/IndividualStockInfoPage/";
 
 
 
-API.search();
-
 function App() {
-
+  // BINANCE:LTCBTC
   return (
-    <IndividualStockInfoPage />
+    <IndividualStockInfoPage companyTicker = {"AAPL"} />
   )
 }
 
