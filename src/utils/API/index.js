@@ -7,7 +7,7 @@ export default {
     },
     getStockHistoricalDailyPriceDataFromLastYear(companyTicker) {
         const currentTime = new Date() / 1000 | 0;
-        return axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${companyTicker}&resolution=15&from=${currentTime - (3600 * 12)}&to=${currentTime}&token=${BAS}`);
+        return axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${companyTicker}&resolution=D&from=${currentTime - (3600*24*30 * 12)}&to=${currentTime}&token=${BAS}`);
     },
     getCryptoHistoricalDailyPriceDataFromLastYear(companyTicker) {
         const currentTime = new Date() / 1000 | 0;

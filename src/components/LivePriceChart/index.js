@@ -4,10 +4,9 @@ import LineChartComponent from "../LineChartComponent";
 const LivePriceChart = (props) => {
 
     const { companyTicker } = props
-    const socket = new WebSocket(`wss://ws.finnhub.io?token=btn728n48v6qfboarpbg`);
 
     useEffect(() => {
-
+        const socket = new WebSocket(`wss://ws.finnhub.io?token=btn728n48v6qfboarpbg`);
         socket.addEventListener('open', function (event) {
             socket.send(JSON.stringify({ 'type': 'subscribe', 'symbol': companyTicker }));
             socket.addEventListener('message', function (event) {
@@ -16,17 +15,13 @@ const LivePriceChart = (props) => {
             });
         });
         return () => {
-
-            socket.send(JSON.stringify({ 'type': 'unsubscribe', 'symbol': companyTicker }))
+            socket.send(JSON.stringify({ 'type': 'unsubscribe', 'symbol': companyTicker }));
         }
     }, [])
 
 
 
-    return (<>
-        <LineChartComponent {...props}/>
-        <button> asdasf</button>
-    </>);
+    return <LineChartComponent {...props} />
 }
 
 export default LivePriceChart;
