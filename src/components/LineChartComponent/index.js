@@ -1,35 +1,14 @@
 import Chart from 'chart.js';
 import "chartjs-plugin-zoom";
+import { DateTime } from "luxon";
 import React, { useEffect } from 'react';
+import 'chartjs-adapter-luxon';
+
 
 const LineChartComponent = (props) => {
 
     const { dataToGraph, chartLabels, chartCustomOptions, companyTicker } = props;
     var lineChart;
-
-    var randomScalingFactor = function () {
-        return (Math.random() > 0.5 ? 1.0 : -1.0) * Math.round(Math.random() * 100);
-    };
-
-    var barChartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-        datasets: [{
-            label: 'Dataset 1',
-            backgroundColor: 'rgba(220,220,220,0.5)',
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }, {
-            hidden: false,
-            label: 'Dataset 2',
-            backgroundColor: 'rgba(255,187,205,1)',
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }, {
-            label: 'Dataset 3',
-            backgroundColor: 'rgba(151,187,205,0.5)',
-            data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-        }]
-
-    };
-
 
     useEffect(() => {
         if (dataToGraph.length > 0) {
@@ -43,9 +22,8 @@ const LineChartComponent = (props) => {
         lineChart = new Chart(document.getElementById('myChart').getContext("2d"), {
             type: 'line',
             data: {
-                labels: [
-                    new Date((chartLabels[0] * 1000) - (3600 * 24 * 30 * 12)).toLocaleString(),
-                    new Date().toLocaleString()],
+                labels: chartLabels.map((item) => new DateTime.fromSeconds(item)),
+
                 datasets: [{
                     label: companyTicker,
                     borderColor: 'rgba(0, 150, 0, 1)',
@@ -53,155 +31,53 @@ const LineChartComponent = (props) => {
                         console.log(new Date(chartLabels[index] * 1000))
                         return {
                             y: price,
-                            t: new Date(chartLabels[index] * 1000)
+                            t: new DateTime.fromSeconds(chartLabels[index])
                         }
                     }),
                     fill: false,
                     tension: 0,
                     steppedLine: false,
-                    pointRadius: 2,
+                    pointRadius: 4,
 
                 }]
             },
             options: chartCustomOptions ? chartCustomOptions
                 :
                 {
+                    responsive: true,
                     scales: {
                         yAxes: [{
                             ticks: {
-                                beginAtZero: false
+                                beginAtZero: false,
+
                             }
                         }],
                         xAxes: [{
                             type: 'time',
                             ticks: {
-                                source: "labels",
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Date'
-                            },
+                                source: "auto",
+                            }
                         }]
-                    }
-                },
-            plugins: {
-                zoom: {
-                    zoom: {
-                        enabled: true,
-                        drag: {
-                            animationDuration: 1000
-                        },
-                        mode: 'x',
-                        speed: 0.05
-                    }
-                }
-            },
-            animation: false,
-            responsive: true
-        });
-
-        // options: {
-        //     scales: {
-        //       xAxes: [{
-        //         type: 'time'
-        //       }]
-        //     }
-        //   }
-
-        // type: 'bar',
-        //     data: barChartData,
-        //     options: {
-        //         // Elements options apply to all of the options unless overridden in a dataset
-        //         // In this case, we are setting the border of each bar to be 2px wide and green
-        //         elements: {
-        //             rectangle: {
-        //                 borderWidth: 2,
-        //                 borderColor: 'rgb(0, 255, 0)',
-        //                 borderSkipped: 'bottom'
-        //             }
-        //         },
-        //         responsive: true,
-        //         legend: {
-        //             position: 'top',
-        //         },
-        //         title: {
-        //             display: true,
-        //             text: 'Chart.js Bar Chart'
-        //         },
-        //         scales: {
-        //             xAxes: [{
-        //                 ticks: {
-        //                     min: 'February',
-        //                     max: 'June'
-        //                 }
-        //             }]
-        //         },
-        //         plugins: {
-        //             zoom: {
-        //                 pan: {
-        //                     enabled: true,
-        //                     mode: 'x'
-        //                 },
-        //                 zoom: {
-        //                     enabled: true,
-        //                     mode: 'x'
-        //                 }
-        //             }
-        //         }
-        //     }
-
-        var ctx = document.getElementById('myChart2').getContext('2d');
-        window.myBar = new window.Chart(ctx, {
-            type: 'bar',
-            data: barChartData,
-            options: {
-                // Elements options apply to all of the options unless overridden in a dataset
-                // In this case, we are setting the border of each bar to be 2px wide and green
-                elements: {
-                    rectangle: {
-                        borderWidth: 2,
-                        borderColor: 'rgb(0, 255, 0)',
-                        borderSkipped: 'bottom'
-                    }
-                },
-                responsive: true,
-                legend: {
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Chart.js Bar Chart'
-                },
-                scales: {
-                    xAxes: [{
-                        ticks: {
-                            min: 'February',
-                            max: 'June'
-                        }
-                    }]
-                },
-                plugins: {
-                    zoom: {
-                        pan: {
-                            enabled: true,
-                            mode: 'y'
-                        },
+                    },
+                    plugins: {
                         zoom: {
-                            enabled: true,
-                            mode: 'x'
+                            zoom: {
+                                enabled: true,
+                                mode: 'x'
+                            }
+        
                         }
-                    }
-                }
-            }
+                    },
+                },
+            animation: false,
+
         });
 
+        
     }
-
-
 
     return <>
         <canvas id="myChart" style={{ width: "1200px", height: "600px" }}> </canvas>
-        <canvas id="myChart2" style={{ width: "1200px", height: "600px" }}> </canvas>
     </>
 }
 
