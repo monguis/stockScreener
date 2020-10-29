@@ -22,7 +22,7 @@ const LineChartComponent = (props) => {
         lineChart = new Chart(document.getElementById('myChart').getContext("2d"), {
             type: 'line',
             data: {
-                labels: chartLabels.map((item) => new DateTime.fromSeconds(item)),
+                labels:[new DateTime.fromSeconds(chartLabels[0]), new DateTime.local()],
 
                 datasets: [{
                     label: companyTicker,
@@ -49,13 +49,21 @@ const LineChartComponent = (props) => {
                         yAxes: [{
                             ticks: {
                                 beginAtZero: false,
-
                             }
                         }],
                         xAxes: [{
+                            display:false,
                             type: 'time',
+                            distribution: 'serial',
+                            time:{
+                                unit:"day",
+                                isoWeekday:false,
+                            },
                             ticks: {
                                 source: "auto",
+                                // min: 1,
+                                // max: chartLabels.length
+                              
                             }
                         }]
                     },
@@ -64,9 +72,13 @@ const LineChartComponent = (props) => {
                             zoom: {
                                 enabled: true,
                                 mode: 'x'
-                            }
+                            },
         
-                        }
+                            pan:{
+                                enabled: true,
+                                mode: 'x'
+                            }
+                        },
                     },
                 },
             animation: false,
