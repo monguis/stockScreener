@@ -22,13 +22,12 @@ const LineChartComponent = (props) => {
         lineChart = new Chart(document.getElementById('myChart').getContext("2d"), {
             type: 'line',
             data: {
-                labels:[new DateTime.fromSeconds(chartLabels[0]), new DateTime.local()],
+                labels: [new DateTime.fromSeconds(chartLabels[0]), new DateTime.local()],
 
                 datasets: [{
                     label: companyTicker,
                     borderColor: 'rgba(0, 150, 0, 1)',
                     data: dataToGraph.map((price, index) => {
-                        console.log(new Date(chartLabels[index] * 1000))
                         return {
                             y: price,
                             t: new DateTime.fromSeconds(chartLabels[index])
@@ -44,7 +43,8 @@ const LineChartComponent = (props) => {
             options: chartCustomOptions ? chartCustomOptions
                 :
                 {
-                    responsive: true,
+                    animation: false,
+                    responsive: false,
                     scales: {
                         yAxes: [{
                             ticks: {
@@ -52,40 +52,61 @@ const LineChartComponent = (props) => {
                             }
                         }],
                         xAxes: [{
-                            display:false,
+                            display: false,
                             type: 'time',
                             distribution: 'serial',
-                            time:{
-                                unit:"day",
-                                isoWeekday:false,
+                            time: {
+                                unit: "day",
+                                isoWeekday: false,
                             },
                             ticks: {
                                 source: "auto",
                                 // min: 1,
                                 // max: chartLabels.length
-                              
+
                             }
                         }]
                     },
                     plugins: {
                         zoom: {
                             zoom: {
+
                                 enabled: true,
-                                mode: 'x'
+                                // mode: 'x',
+                                rangeMin: {
+                                    // Format of max zoom range depends on scale type
+                                    // x: 0.01
+                                }, 
+                                mode: function ({ chart }) {
+                                    console.log(this)
+                                    return 'x';
+                                },
                             },
-        
-                            pan:{
+
+
+
+                            pan: {
                                 enabled: true,
-                                mode: 'x'
+                                // mode: 'x',
+                                mode: function ({ chart }) {
+                                    console.log(this)
+                                    return 'x';
+                                },
+                                rangeMin:{
+                                    x:chartLabels[0]*1000
+                                },
+                                rangeMax:{
+                                    x:chartLabels[chartLabels.length-1]*1000
+                                }
                             }
                         },
                     },
                 },
-            animation: false,
+            
 
         });
 
-        
+
     }
 
     return <>
