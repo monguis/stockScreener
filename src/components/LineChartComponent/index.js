@@ -17,12 +17,24 @@ const LineChartComponent = (props) => {
         }
     }, [props])
 
+
+//     let range_min = new Date(chartLabels[0]*1000);  //start date
+//     range_min.setDate(range_min.getDate()-10);
+  
+//     let range_max = new Date(chartLabels[chartLabels.length-1]*1000);  //end date
+//     range_max.setDate(range_max.getDate()+10);
+// console.log("fecha")
+// console.log(range_max)
+
+
+
+
     const buildChart = () => {
 
         lineChart = new Chart(document.getElementById('myChart').getContext("2d"), {
             type: 'line',
             data: {
-                labels: [new DateTime.fromSeconds(chartLabels[0]), new DateTime.local()],
+                labels: [new DateTime.fromSeconds(chartLabels[0]), new DateTime.fromSeconds(chartLabels[chartLabels.length - 1])],
 
                 datasets: [{
                     label: companyTicker,
@@ -33,7 +45,7 @@ const LineChartComponent = (props) => {
                             t: new DateTime.fromSeconds(chartLabels[index])
                         }
                     }),
-                    fill: false,
+                    fill: true,
                     tension: 0,
                     steppedLine: false,
                     pointRadius: 4,
@@ -52,17 +64,16 @@ const LineChartComponent = (props) => {
                             }
                         }],
                         xAxes: [{
-                            display: false,
+                            distribution:"series",
+                            display: true,
                             type: 'time',
-                            distribution: 'serial',
                             time: {
-                                unit: "day",
-                                isoWeekday: false,
+                                // unit: "day",
+                                bounds:"data",
                             },
                             ticks: {
                                 source: "auto",
-                                // min: 1,
-                                // max: chartLabels.length
+                                min: 1,
 
                             }
                         }]
@@ -70,39 +81,34 @@ const LineChartComponent = (props) => {
                     plugins: {
                         zoom: {
                             zoom: {
-
+                                speed: 0.05,
                                 enabled: true,
-                                // mode: 'x',
+                                mode: "x",
+                                threshold: 10,
                                 rangeMin: {
-                                    // Format of max zoom range depends on scale type
-                                    // x: 0.01
-                                }, 
-                                mode: function ({ chart }) {
-                                    console.log(this)
-                                    return 'x';
+                                    x: chartLabels[0] * 1000
                                 },
+                                rangeMax: {
+                                    x: chartLabels[chartLabels.length - 1] * 1000
+                                }
                             },
 
 
 
                             pan: {
                                 enabled: true,
-                                // mode: 'x',
-                                mode: function ({ chart }) {
-                                    console.log(this)
-                                    return 'x';
+                                mode: 'x',
+                                rangeMin: {
+                                    x: chartLabels[0] * 1000
                                 },
-                                rangeMin:{
-                                    x:chartLabels[0]*1000
-                                },
-                                rangeMax:{
-                                    x:chartLabels[chartLabels.length-1]*1000
+                                rangeMax: {
+                                    x: chartLabels[chartLabels.length - 1] * 1000
                                 }
                             }
                         },
                     },
                 },
-            
+
 
         });
 
