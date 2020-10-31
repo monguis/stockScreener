@@ -1,22 +1,22 @@
-import Chart from 'chart.js';
-import "chartjs-plugin-zoom";
+import React, { useEffect } from "react"
 import { DateTime } from "luxon";
-import React, { useEffect } from 'react';
-import 'chartjs-adapter-luxon';
+import Chart from "chart.js";
+import "chartjs-adapter-luxon"
+import "chartjs-plugin-zoom"
 
 
-const LineChartComponent = (props) => {
-
-    const { dataToGraph, chartLabels, chartCustomOptions, companyTicker } = props;
+const CandleChartComponent = (props) => {
+    const { dataToGraph, chartLabels, chartCustomOptions, sharesVolume, companyTicker } = props;
     var lineChart;
 
     useEffect(() => {
-        if (dataToGraph.length > 0) {
+        if (dataToGraph.length > 0 && sharesVolume.length > 0) {
+            console.log(sharesVolume)
             if (lineChart) lineChart.destroy()
             buildChart();
         }
     }, [props]);
-    
+
 
     const buildChart = () => {
 
@@ -25,21 +25,42 @@ const LineChartComponent = (props) => {
             data: {
                 labels: [new DateTime.fromSeconds(chartLabels[0]), new DateTime.fromSeconds(chartLabels[chartLabels.length - 1])],
 
-                datasets: [{
-                    label: companyTicker,
-                    borderColor: 'rgba(0, 150, 0, 1)',
-                    data: dataToGraph.map((price, index) => {
-                        return {
-                            y: price,
-                            t: new DateTime.fromSeconds(chartLabels[index])
-                        }
-                    }),
-                    fill: true,
-                    tension: 0,
-                    steppedLine: false,
-                    pointRadius: 4,
 
-                }]
+
+                datasets: [
+                    {
+                        yAxisID: 'A',
+                        label: companyTicker,
+                        borderColor: 'rgba(0, 150, 0, 1)',
+                        data: dataToGraph.map((price, index) => {
+                            return {
+                                y: price,
+                                t: new DateTime.fromSeconds(chartLabels[index])
+                            }
+                        }),
+                        fill: true,
+                        tension: 0,
+                        steppedLine: false,
+                        pointRadius: 4,
+
+                    },
+                    {
+                        yAxisID: 'B',
+                        type: "bar",
+                        label: "Volume",
+                        data: sharesVolume.map((volumeValue, index) => ({
+                            y: volumeValue,
+                            t: new DateTime.fromSeconds(chartLabels[index])
+                        })),
+                        backgroundColor: function (context) {
+                            const index = context.dataIndex;
+                            const actualChart = context.chart;
+                            const periodPrice = actualChart.data.datasets[0].data[index].y
+                            const pastPeriodPrice = actualChart.data.datasets[0].data[index > 0 ? index - 1 : 0].y
+                            return periodPrice > pastPeriodPrice ? "rgba(0, 150, 0, 1)" : "rgba(150, 0, 0, 1)"
+                        }
+                    }
+                ]
             },
             options: chartCustomOptions ? chartCustomOptions
                 :
@@ -48,10 +69,18 @@ const LineChartComponent = (props) => {
                     responsive: false,
                     scales: {
                         yAxes: [{
+                            id: "A",
+                            ticks: {
+                                beginAtZero: true,
+                            }
+                        }, {
+                            id: "B",
                             ticks: {
                                 beginAtZero: false,
+                                max: 3000000000
                             }
-                        }],
+                        }
+                        ],
                         xAxes: [{
                             distribution: "series",
                             display: true,
@@ -110,6 +139,4 @@ const LineChartComponent = (props) => {
     </>
 }
 
-export default LineChartComponent;
-
-
+export default CandleChartComponent;
