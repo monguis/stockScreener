@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import Chart from "chart.js";
 import "chartjs-adapter-luxon"
 import "chartjs-plugin-zoom"
+import "chartjs-plugin-crosshair";
 
 
 const CandleChartComponent = (props) => {
@@ -11,7 +12,6 @@ const CandleChartComponent = (props) => {
 
     useEffect(() => {
         if (dataToGraph.length > 0 && sharesVolume.length > 0) {
-            console.log(sharesVolume)
             if (lineChart) lineChart.destroy()
             buildChart();
         }
@@ -85,20 +85,41 @@ const CandleChartComponent = (props) => {
                             distribution: "series",
                             display: true,
                             type: 'time',
-                            time: {
+                            ticks: {
                                 unit: "day",
                                 bounds: "data",
-                            },
-                            ticks: {
                                 source: "auto",
-                                min: 1,
+                            },
 
-                            }
                         }]
                     },
+                    tooltips: {
+                        mode: "index",
+                        intersect: false,
+                        callbacks: {
+                            title: function (a, datasets) {
+                                return a[0].xLabel;
+                            },
+                            label: function (i, d) {
+                                return (
+                                    d.datasets[i.datasetIndex].label + ": " + i.yLabel.toFixed(2)
+                                );
+                            },
+                        }
+                    },
                     plugins: {
+                        crosshair: {
+                            line: {
+                                color: "#42f5c2",
+                                width: 5,
+                                dashPattern: [1, 5]
+                            },
+                            sync: {
+                                enabled: false
+                            },
+                        },
                         zoom: {
-
+                            // enabled: false,
                             zoom: {
                                 speed: 0.05,
                                 enabled: true,
@@ -111,22 +132,19 @@ const CandleChartComponent = (props) => {
                                     x: chartLabels[chartLabels.length - 1] * 1000
                                 }
                             },
-
-
-
-                            pan: {
-                                enabled: true,
-                                mode: 'x',
-                                rangeMin: {
-                                    x: chartLabels[0] * 1000
-                                },
-                                rangeMax: {
-                                    x: chartLabels[chartLabels.length - 1] * 1000
-                                }
-                            }
-                        },
-                    },
+                            //             pan: {
+                            //                 enabled: true,
+                            //                 mode: 'x',
+                            //                 rangeMin: {
+                            //                     x: chartLabels[0] * 1000
+                            //                 },
+                            //                 rangeMax: {
+                            //                     x: chartLabels[chartLabels.length - 1] * 1000
+                        }
+                    }
                 },
+
+
 
 
         });
