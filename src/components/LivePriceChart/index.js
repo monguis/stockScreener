@@ -29,10 +29,21 @@ const LivePriceChart = (props) => {
             last: zoomIndex.last - 10,
             first: zoomIndex.first + 10
         })
-        console.log(dataToGraph.slice(zoomIndex.first, zoomIndex.last))
+    }
+    const method2 = (e) => {
+        setZoomIndex({
+            last: zoomIndex.last + 10,
+            first: zoomIndex.first - 10
+        })
     }
 
-    return <CandleChartComponent {...props} sharesVolume={sharesVolume.slice(zoomIndex.first, zoomIndex.last)} dataToGraph={dataToGraph.slice(zoomIndex.first, zoomIndex.last)} method={method} />
+    return (
+        <div>
+            < CandleChartComponent {...props} sharesVolume={sharesVolume.slice(zoomIndex.first, zoomIndex.last)} dataToGraph={dataToGraph.slice(zoomIndex.first, zoomIndex.last)} method={method} />
+            <button onClick={method}>Zoom</button>
+            <button onClick={method2}>deZoom</button>
+    </div >
+    )
 }
 
 export default LivePriceChart;

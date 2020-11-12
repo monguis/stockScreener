@@ -16,7 +16,6 @@ const IndividualStockInfoPage = (props) => {
         API.getStockHistoricalDailyPriceDataFromLastYear(companyTicker)
             .then(({ data }) => {
                 if (data.s === "ok") {
-                    console.log(data.v)
                     setChartData({
                         ...ChartData,
                         tradeTime: data.t,
@@ -25,13 +24,19 @@ const IndividualStockInfoPage = (props) => {
                     });
                 }
             })
+        API.getStockFinancials("AAPL").then(({ data }) => {
+            console.log(data)
+        })
         return () => {
-            
+
         }
     }, []);
 
     return (
-        <LivePriceChart dataToGraph={ChartData.price} chartLabels={ChartData.tradeTime} sharesVolume={ChartData.sharesVolume} companyTicker={companyTicker} />
+        <div>
+            <h1>Data</h1>
+            <LivePriceChart dataToGraph={ChartData.price} chartLabels={ChartData.tradeTime} sharesVolume={ChartData.sharesVolume} companyTicker={companyTicker} />
+        </div>
     )
 }
 
